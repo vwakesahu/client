@@ -1,101 +1,129 @@
-import Image from "next/image";
+"use client";
+import Link from "next/link";
+import { IceCream, Github, FileCode } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+import { buttonVariants } from "@/components/ui/button";
+import { Announcement } from "@/components/announcement";
+import { FadeIn } from "@/components/fade-in";
+// import {
+//   Icons,
+//   ReactIcon,
+//   TailwindCSSIcon,
+//   TypeScriptIcon,
+// } from "@/components/icons"
+import { FeaturesSection } from "@/components/feature-section";
+import { LatestComponentVertical } from "@/components/featured-component";
+import { PlugCardGrid } from "@/components/plug-grid";
+import { TemplateGrid } from "@/components/cult-components/template-grid";
+import { PageActions, PageHeader } from "@/components/page-header";
+import { GradientHeading } from "@/components/ui/gradient-heading";
 
-export default function Home() {
+const Page = () => {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className=" isolate min-h-screen overflow-hidden  pb-8 sm:pb-12 md:pb-0">
+      {/* <div className="container relative pt-12"></div> */}
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      {/* <BgNoiseWrapper url="/egg-shell-noise.png"> */}
+      <div className=" relative pt-12 md:pt-8">
+        <PageHeader>
+          <FadeIn>
+            <Announcement />
+          </FadeIn>
+          <FadeIn>
+            <div className="pt-4 md:pt-0">
+              <GradientHeading
+                weight="bold"
+                className="text-center text-xl font-bold leading-tight tracking-tighter md:text-5xl "
+              >
+                Components crafted for
+              </GradientHeading>
+              <GradientHeading
+                size="xll"
+                weight="bold"
+                className="text-center text-xl font-bold    tracking-tighter lg:leading-[0.5rem] "
+              >
+                <br className="hidden md:block" /> Design Engineers
+              </GradientHeading>
+            </div>
+          </FadeIn>
+
+          <FadeIn>
+            <div className=" flex max-w-2xl flex-wrap items-center justify-center gap-1 text-left text-base  leading-3  text-foreground md:pt-8 md:text-xl md:font-normal md:leading-6">
+              <span>Ready-to-use</span>
+              <div className="hidden -rotate-45 rounded-full border border-black/10 p-1 shadow-lg md:block">
+                <IceCream className="h-6 w-6" aria-hidden="true" />
+              </div>
+              <span> components for your react apps.</span>
+
+              <span>Shadcn compatible.</span>
+              <div className="rounded-full border border-black/10 p-1 shadow-lg">
+                <Github className="h-5 w-5" />
+              </div>
+              <span>Styled with tailwindcss.</span>
+              <div className="hidden -rotate-45 rounded-full border border-black/10 p-1 shadow-lg md:block ">
+                <Github className="h-6 w-6" aria-hidden="true" />
+              </div>
+              <span className="">Copy and paste, open source, typed. </span>
+              <div className="rounded-xs hidden border border-black/10 p-1 shadow-lg md:block">
+                <FileCode className="h-6 w-6" aria-hidden="true" />
+              </div>
+            </div>
+          </FadeIn>
+          <FadeIn>
+            <PageActions>
+              <Link href="/docs" className={cn(buttonVariants())}>
+                Get Started
+              </Link>
+              <Link
+                target="_blank"
+                rel="noreferrer"
+                href={"https://"}
+                className={cn(buttonVariants({ variant: "outline" }))}
+              >
+                <Github className="mr-2 h-4 w-4" />
+                GitHub
+              </Link>
+            </PageActions>
+          </FadeIn>
+        </PageHeader>
+
+        <FadeIn>
+          <section className="w-full space-y-4 md:block">
+            
+            <div className=" mx-auto   w-full max-w-4xl rounded-[24px] border border-black/5 p-2 shadow-sm md:rounded-t-[44px]">
+              <LatestComponentVertical />
+             
+            </div>
+
+            
+            <div className=" mx-auto   max-w-4xl rounded-[24px] border border-black/5 p-2 shadow-sm ">
+              <TemplateGrid />
+            </div>
+
+            <div className=" mx-auto   max-w-4xl rounded-[24px] border border-black/5 p-2 shadow-sm md:rounded-b-[44px] md:rounded-t-[20px]">
+              <PlugCardGrid />
+            </div>
+          </section>
+        </FadeIn>
+      </div>
+      <section className=" mt-12 hidden w-full md:block">
+        <FadeIn>
+          <div className=" relative mx-auto max-w-4xl rounded-[24px] border border-black/5 p-2 shadow-sm md:rounded-[44px]">
+            <Badge
+              variant="outline"
+              className="absolute left-4 top-6 rounded-[14px] border border-black/10 text-base md:left-6"
+            >
+              <IceCream className=" fill-[#A3C0E0]  stroke-1 text-neutral-800" />{" "}
+              Component Preview
+            </Badge>
+            <FeaturesSection />
+          </div>
+        </FadeIn>
+      </section>
+      {/* </BgNoiseWrapper> */}
     </div>
   );
-}
+};
+
+export default Page;
