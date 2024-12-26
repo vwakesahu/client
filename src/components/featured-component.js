@@ -1,11 +1,11 @@
-import Link from "next/link"
-import { ArrowRight, SparklesIcon } from "lucide-react"
-import { ContactFormExample } from "@/components/popover-form-demo"
-import { GradientHeading } from "./ui/gradient-heading"
-import { LightBoard } from "./cult-components/lightboard"
-import LogoCarousel from "./cult-components/logo-carousel"
+import Link from "next/link";
+import { ArrowRight, SparklesIcon } from "lucide-react";
+import { ContactFormExample } from "@/components/popover-form-demo";
+import { GradientHeading } from "./ui/gradient-heading";
+import { LightBoard } from "./cult-components/lightboard";
+import LogoCarousel from "./cult-components/logo-carousel";
 
-import { Badge } from "./ui/badge"
+import { Badge } from "./ui/badge";
 
 export function FeaturedComponent() {
   return (
@@ -90,7 +90,7 @@ export function FeaturedComponent() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export function LatestComponent() {
@@ -123,7 +123,7 @@ export function LatestComponent() {
         <ContactFormExample />
       </div>
     </div>
-  )
+  );
 }
 
 export function LatestComponentVertical() {
@@ -135,19 +135,15 @@ export function LatestComponentVertical() {
         className="absolute left-4 top-6 rounded-[14px] border border-black/10 text-base md:left-6"
       >
         <SparklesIcon className="  fill-[#EEBDE0] stroke-1 text-neutral-800" />{" "}
-        Latest component
+        Technology Stack
       </Badge>
       <div className="flex flex-col justify-center pb-2 pl-4 pt-14 md:items-center">
         <div className="flex  gap-2">
           <div>
-            <GradientHeading>Logo Carousel</GradientHeading>
-            <Link
-              href="/docs/components/popover-form"
-              className="flex items-center gap-1 "
-            >
-              Headless logo carousel animation.
-              {/* <ArrowRight className="hidden h-4 w-4 md:block" /> */}
-            </Link>
+            <GradientHeading>Utilized Technology</GradientHeading>
+            <p href="" className="flex items-center gap-1 ">
+              Tech Stack that we used to build this amazing idea into reality.
+            </p>
           </div>
         </div>
       </div>
@@ -160,5 +156,5 @@ export function LatestComponentVertical() {
       </div>
       {/* </div> */}
     </div>
-  )
+  );
 }

@@ -14,8 +14,12 @@ import { TemplateGrid } from "@/components/cult-components/template-grid";
 import { PageActions, PageHeader } from "@/components/page-header";
 import { GradientHeading } from "@/components/ui/gradient-heading";
 import Navbar from "@/components/site-header";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { useFullscreen } from "@/hooks/use-fullscreen";
 
 const Page = () => {
+  const isMobile = useIsMobile();
+  const { isFullscreen, toggleFullscreen } = useFullscreen();
   const [isAnnouncementSticky, setIsAnnouncementSticky] = useState(false);
 
   useEffect(() => {
@@ -30,6 +34,12 @@ const Page = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (isMobile && !isFullscreen) {
+      toggleFullscreen();
+    }
+  }, [isMobile]);
 
   return (
     <>
@@ -55,54 +65,42 @@ const Page = () => {
               </div>
             </FadeIn>
             <FadeIn>
-              <div className="pt-4 md:pt-0">
+              <div className="pt-4 md:pt-4">
                 <GradientHeading
                   weight="bold"
                   className="text-center text-xl font-bold leading-tight tracking-tighter md:text-5xl"
                 >
-                  Components crafted for
+                  Redefining
                 </GradientHeading>
                 <GradientHeading
                   size="xll"
                   weight="bold"
                   className="text-center text-xl font-bold tracking-tighter lg:leading-[0.5rem]"
                 >
-                  <br className="hidden md:block" /> Design Engineers
+                  <br className="hidden md:block" /> Certificates
                 </GradientHeading>
               </div>
             </FadeIn>
 
             <FadeIn>
-              <div className="flex max-w-2xl flex-wrap items-center justify-center gap-1 text-left text-base leading-3 text-foreground md:pt-8 md:text-xl md:font-normal md:leading-6">
-                <span>Ready-to-use</span>
-                <div className="hidden -rotate-45 rounded-full border border-black/10 p-1 shadow-lg md:block">
-                  <IceCream className="h-6 w-6" aria-hidden="true" />
-                </div>
-                <span> components for your react apps.</span>
-
-                <span>Shadcn compatible.</span>
-                <div className="rounded-full border border-black/10 p-1 shadow-lg">
-                  <Github className="h-5 w-5" />
-                </div>
-                <span>Styled with tailwindcss.</span>
-                <div className="hidden -rotate-45 rounded-full border border-black/10 p-1 shadow-lg md:block">
-                  <Github className="h-6 w-6" aria-hidden="true" />
-                </div>
-                <span className="">Copy and paste, open source, typed. </span>
-                <div className="rounded-xs hidden border border-black/10 p-1 shadow-lg md:block">
-                  <FileCode className="h-6 w-6" aria-hidden="true" />
-                </div>
+              <div className="flex max-w-2xl flex-wrap items-center justify-center gap-1 text-left text-base  text-foreground md:pt-8 md:text-xl md:font-normal md:leading-6">
+                <span className="text-center">
+                  At Certify Labs, we're revolutionizing certification with
+                  cutting-edge privacy and access control, powered by Fully
+                  Homomorphic Encryption (FHE) and advanced symmetric
+                  algorithms.
+                </span>
               </div>
             </FadeIn>
             <FadeIn>
               <PageActions>
-                <Link href="/docs" className={cn(buttonVariants())}>
+                <Link href="/certificates" className={cn(buttonVariants())}>
                   Get Started
                 </Link>
                 <Link
                   target="_blank"
                   rel="noreferrer"
-                  href={"https://"}
+                  href={"https://github.com/Certify-Labs/docs"}
                   className={cn(buttonVariants({ variant: "outline" }))}
                 >
                   <Github className="mr-2 h-4 w-4" />

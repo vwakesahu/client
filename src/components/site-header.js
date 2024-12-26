@@ -1,16 +1,16 @@
-'use client'
+"use client";
 import React from "react";
 import { Github, X, Wallet } from "lucide-react";
+import Link from "next/link";
 
 const Navbar = () => {
   return (
     <nav className="w-full px-4 sticky top-0 z-50">
       <div className="mx-auto flex h-16 max-w-screen-2xl items-center justify-between relative">
-        <div className="flex items-center space-x-8 z-20">
+        <div className="md:flex hidden items-center space-x-8 z-20">
           <div className="text-gray-900 font-semibold">Certify/Blocks</div>
           <div className="flex space-x-4"></div>
         </div>
-
         <div className="absolute inset-x-0 h-full">
           <div className="relative h-20 w-full overflow-hidden rounded-b-2xl">
             <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden rounded-b-2xl border-gray-200/50">
@@ -37,10 +37,26 @@ const Navbar = () => {
             </svg>
           </div>
         </div>
-
-        <div className="flex items-center space-x-4 z-20">
-          <Github className="h-6 w-6 cursor-pointer text-gray-600 hover:text-gray-900" />
-          <X className="h-6 w-6 cursor-pointer text-gray-600 hover:text-gray-900" />
+        <div className="md:flex hidden items-center justify-end space-x-4 z-20 w-full">
+          <Link
+            href="https://github.com/Certify-Labs"
+            passHref
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub"
+            className="h-6 w-6 cursor-pointer text-gray-600 hover:text-gray-900"
+          >
+            <Github />
+          </Link>
+          <Link
+            href="https://x.com/CertifyBlocks"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="X (Twitter)"
+            className="h-6 w-6 cursor-pointer text-gray-600 hover:text-gray-900"
+          >
+            <X />
+          </Link>
         </div>
       </div>
 

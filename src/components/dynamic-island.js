@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Wallet,
   Loader,
@@ -55,41 +55,20 @@ const WalletAction = ({ loginMethods = ["email", "wallet", "google"] }) => {
   const [loginState, setLoginState] = useState("initial");
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const availableLoginMethods = () => {
-    return loginMethods.filter((method) => LOGIN_METHOD_NAMES[method]);
-  };
-
   // Helper function to format wallet address
   const formatAddress = (address) => {
     if (!address) return "";
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
   };
 
-  // Helper function to get display name
-  const getDisplayName = () => {
-    if (!user) return "Connected";
-
-    // Check for email
-    if (user.email) return user.email;
-
-    // Check for wallet address
-    if (user.wallet?.address) return formatAddress(user.wallet.address);
-
-    // Check for linked accounts
-    if (user.linkedAccounts && user.linkedAccounts.length > 0) {
-      const primaryAccount = user.linkedAccounts[0];
-      if (primaryAccount.type === "email") return primaryAccount.email;
-      if (primaryAccount.type === "wallet")
-        return formatAddress(primaryAccount.address);
-    }
-
-    return "Connected";
-  };
-
   // Handle Privy auth state changes
   useEffect(() => {
     if (authenticated) {
       setLoginState("connected");
+      setSize(SIZE_PRESETS.COMPACT);
+      setIsProcessing(false);
+    } else {
+      setLoginState("initial");
       setSize(SIZE_PRESETS.COMPACT);
       setIsProcessing(false);
     }
