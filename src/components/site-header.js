@@ -12,7 +12,7 @@ const Navbar = () => {
         </div>
 
         <div className="absolute inset-x-0 h-full">
-          <div className="relative h-16 w-full overflow-hidden rounded-b-2xl">
+          <div className="relative h-20 w-full overflow-hidden rounded-b-2xl">
             <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden rounded-b-2xl border-gray-200/50">
               <div className="glass-effect h-full w-full"></div>
             </div>

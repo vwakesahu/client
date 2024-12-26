@@ -2,6 +2,8 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import PrivyWrapper from "@/privy/privyProvider";
+import { FHEWrapper } from "@/fhevm/fheWrapper";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -26,9 +28,15 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <SiteFooter />
+          {/* <Navbar /> */}
+          <PrivyWrapper>
+            <FHEWrapper>
+              <>
+                <main className="flex-1">{children}</main>
+                <SiteFooter />
+              </>
+            </FHEWrapper>
+          </PrivyWrapper>
         </>
       </body>
     </html>

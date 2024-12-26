@@ -1,15 +1,20 @@
-"use client";
-
+import { useState, useMemo, useEffect } from "react";
 import {
   Wallet,
-  WalletCards,
-  Loader2,
+  Loader,
   CheckCircle2,
-  XCircle,
+  Mail,
+  Phone,
+  User,
+  Shield,
   AlertCircle,
+  Twitter,
+  Github,
+  MessageCircle,
 } from "lucide-react";
+import { usePrivy } from "@privy-io/react-auth";
+
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   DynamicContainer,
   DynamicDescription,
@@ -18,153 +23,280 @@ import {
   DynamicIslandProvider,
   DynamicTitle,
   useDynamicIslandSize,
-  useScheduledAnimations,
-} from "./cult-components/dynamic-island";
+  SIZE_PRESETS,
+} from "@/components/ui/dynamic-island";
+import { useWalletContext } from "@/privy/walletContext";
 
-const WalletAction = () => {
-  const { state: blobState, setSize } = useDynamicIslandSize();
+const LOGIN_METHOD_ICONS = {
+  email: Mail,
+  sms: Phone,
+  wallet: Wallet,
+  google: User,
+  twitter: Twitter,
+  github: Github,
+  discord: MessageCircle,
+};
 
-  // Define wallet connection states
-  const walletStates = [
-    "initial", // Compact: Show connect wallet button
-    "connecting", // Large: Loading state
-    "select", // Medium: Select wallet type
-    "connected", // Long: Show connected address
-    "error", // Tall: Show error message
-  ];
+const LOGIN_METHOD_NAMES = {
+  email: "Email",
+  sms: "Phone",
+  wallet: "Wallet",
+  google: "Google",
+  twitter: "Twitter",
+  github: "GitHub",
+  discord: "Discord",
+};
 
-  useScheduledAnimations([
-    { size: "compact", delay: 1000 },
-    { size: "large", delay: 1500 },
-    { size: "medium", delay: 2000 },
-    { size: "long", delay: 2500 },
-    { size: "tall", delay: 3000 },
-  ]);
+const WalletAction = ({ loginMethods = ["email", "wallet", "google"] }) => {
+  const { setSize } = useDynamicIslandSize();
+  const { address } = useWalletContext();
+  const { authenticated, ready, login, logout, user } = usePrivy();
 
-  // Initial compact state - Connect Wallet button
+  const [loginState, setLoginState] = useState("initial");
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const availableLoginMethods = () => {
+    return loginMethods.filter((method) => LOGIN_METHOD_NAMES[method]);
+  };
+
+  // Helper function to format wallet address
+  const formatAddress = (address) => {
+    if (!address) return "";
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  };
+
+  // Helper function to get display name
+  const getDisplayName = () => {
+    if (!user) return "Connected";
+
+    // Check for email
+    if (user.email) return user.email;
+
+    // Check for wallet address
+    if (user.wallet?.address) return formatAddress(user.wallet.address);
+
+    // Check for linked accounts
+    if (user.linkedAccounts && user.linkedAccounts.length > 0) {
+      const primaryAccount = user.linkedAccounts[0];
+      if (primaryAccount.type === "email") return primaryAccount.email;
+      if (primaryAccount.type === "wallet")
+        return formatAddress(primaryAccount.address);
+    }
+
+    return "Connected";
+  };
+
+  // Handle Privy auth state changes
+  useEffect(() => {
+    if (authenticated) {
+      setLoginState("connected");
+      setSize(SIZE_PRESETS.COMPACT);
+      setIsProcessing(false);
+    }
+  }, [authenticated, setSize]);
+
+  const showLoginOptions = async () => {
+    try {
+      setIsProcessing(true);
+      setLoginState("connecting");
+      setSize(SIZE_PRESETS.LARGE);
+
+      // Brief delay for animation
+      await new Promise((resolve) => setTimeout(resolve, 800));
+
+      if (!authenticated) {
+        setLoginState("options");
+        setSize(SIZE_PRESETS.MEDIUM);
+      }
+    } catch (error) {
+      console.error("Error showing options:", error);
+      setLoginState("error");
+      setSize(SIZE_PRESETS.COMPACT_MEDIUM);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleLogin = async (method) => {
+    try {
+      setIsProcessing(true);
+      setLoginState("connecting");
+      setSize(SIZE_PRESETS.LARGE);
+
+      // Call Privy login and wait for it to complete
+      await login({
+        loginMethods: [method],
+        onSuccess: () => {
+          setLoginState("connected");
+          setSize(SIZE_PRESETS.COMPACT);
+        },
+        onError: (error) => {
+          console.error("Login error:", error);
+          setLoginState("error");
+          setSize(SIZE_PRESETS.COMPACT_MEDIUM);
+        },
+      });
+    } catch (error) {
+      console.error("Login error:", error);
+      setLoginState("error");
+      setSize(SIZE_PRESETS.COMPACT_MEDIUM);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleDisconnect = async () => {
+    try {
+      setIsProcessing(true);
+      await logout();
+      setLoginState("initial");
+      setSize(SIZE_PRESETS.COMPACT);
+    } catch (error) {
+      console.error("Logout error:", error);
+      setLoginState("error");
+      setSize(SIZE_PRESETS.COMPACT_MEDIUM);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   const renderCompactState = () => (
-    <DynamicContainer className="flex items-center justify-between px-4 h-full w-full">
-      <DynamicDescription className="flex items-center text-white">
-        <Wallet className="h-5 w-5 mr-2 text-cyan-400" />
-        Connect Wallet
-      </DynamicDescription>
-
-      <Badge variant="outline" className="text-cyan-400">
-        Web3
-      </Badge>
-    </DynamicContainer>
-  );
-
-  // Loading state while connecting
-  const renderLargeState = () => (
-    <DynamicContainer className="flex items-center justify-center h-full w-full">
-      <div className="flex items-center gap-4 px-4">
-        <Loader2 className="animate-spin h-8 w-8 text-cyan-400" />
-        <DynamicTitle className="text-xl font-bold text-white">
-          Connecting to Wallet...
-        </DynamicTitle>
-      </div>
-    </DynamicContainer>
-  );
-
-  // Wallet selection state
-  const renderMediumState = () => (
-    <DynamicContainer className="flex flex-col p-4 h-full">
-      <DynamicTitle className="text-lg font-bold text-white mb-2">
-        Select Your Wallet
-      </DynamicTitle>
-
-      <div className="grid grid-cols-2 gap-2">
-        <Button className="flex items-center justify-center">
-          <WalletCards className="mr-2 h-4 w-4" /> MetaMask
-        </Button>
-        <Button className="flex items-center justify-center">
-          <Wallet className="mr-2 h-4 w-4" /> WalletConnect
-        </Button>
-      </div>
-    </DynamicContainer>
-  );
-
-  // Connected state showing address
-  const renderLongState = () => (
-    <DynamicContainer className="flex items-center justify-between px-4 h-full w-full">
-      <div className="flex items-center gap-2">
-        <CheckCircle2 className="h-6 w-6 text-green-400" />
-        <DynamicTitle className="text-white font-medium">
-          0x1234...5678
-        </DynamicTitle>
-      </div>
-      <Button variant="outline" size="sm">
-        Disconnect
+    <DynamicContainer className="w-full h-full px-6">
+      <Button
+        onClick={showLoginOptions}
+        disabled={isProcessing}
+        className="w-full h-full bg-transparent hover:bg-transparent p-0 border-none shadow-none"
+      >
+        <div className="relative w-full flex items-center">
+          <DynamicDescription className="my-auto text-lg font-medium text-white">
+            <Wallet className="h-5 w-5 fill-cyan-400 text-cyan-400" />
+          </DynamicDescription>
+          <DynamicDescription className="my-auto text-lg text-center w-full font-bold text-white">
+            Connect Account
+          </DynamicDescription>
+        </div>
       </Button>
     </DynamicContainer>
   );
 
-  // Error state
-  const renderTallState = () => (
-    <DynamicContainer className="flex flex-col p-4 gap-2">
-      <div className="flex items-center gap-2">
-        <XCircle className="h-6 w-6 text-red-400" />
-        <DynamicTitle className="text-lg font-bold text-white">
-          Connection Failed
+  const renderLoadingState = () => (
+    <DynamicContainer className="flex items-center justify-center h-full w-full">
+      <div className="relative flex w-full items-center justify-between gap-6 px-4">
+        <Loader className="animate-spin h-12 w-12 text-cyan-400" />
+        <DynamicTitle className="my-auto text-2xl font-black tracking-tighter text-white">
+          Connecting...
         </DynamicTitle>
       </div>
-      <DynamicDescription className="text-neutral-400">
-        Please check if your wallet is unlocked and try again.
-      </DynamicDescription>
-      <Button className="mt-2">Try Again</Button>
     </DynamicContainer>
   );
 
-  // Render state based on current size
-  function renderState() {
-    switch (blobState.size) {
-      case "compact":
-        return renderCompactState();
-      case "large":
-        return renderLargeState();
-      case "medium":
-        return renderMediumState();
-      case "long":
-        return renderLongState();
-      case "tall":
-        return renderTallState();
+  const renderOptionsState = () => (
+    <DynamicContainer className="flex flex-col justify-between px-2 pt-4 text-left text-white h-full">
+      <DynamicTitle className="text-2xl pl-3 font-black tracking-tighter">
+        Choose Login Method
+      </DynamicTitle>
+      <DynamicDescription className="leading-5 text-neutral-500 pl-3">
+        Select your preferred way to connect
+      </DynamicDescription>
+
+      <DynamicDiv className="flex flex-col mt-auto space-y-1 mb-2 bg-neutral-700 p-2 rounded-b-2xl">
+        {["email", "wallet"].map((method) => {
+          const IconComponent = LOGIN_METHOD_ICONS[method] || User;
+          return (
+            <Button
+              key={method}
+              onClick={() => handleLogin(method)}
+              disabled={isProcessing}
+              className="mt-1"
+            >
+              <IconComponent className="mr-2 h-4 w-4 fill-cyan-400 text-cyan-400" />
+              {LOGIN_METHOD_NAMES[method]}
+            </Button>
+          );
+        })}
+      </DynamicDiv>
+    </DynamicContainer>
+  );
+
+  const renderConnectedState = () => (
+    <DynamicContainer className="w-full h-full px-8">
+      <Button
+        onClick={handleDisconnect}
+        disabled={isProcessing}
+        className="w-full h-full bg-transparent hover:bg-transparent p-0 shadow-none border-none"
+      >
+        <div className="relative w-full flex items-center">
+          <DynamicDescription className="my-auto text-lg font-medium text-white">
+            <Shield className="h-5 w-5 fill-cyan-400 text-cyan-400" />
+          </DynamicDescription>
+          <DynamicDescription className="w-full text-center my-auto text-lg font-bold text-white">
+            {/* {getDisplayName()} */}
+            {formatAddress(address)}
+          </DynamicDescription>
+        </div>
+      </Button>
+    </DynamicContainer>
+  );
+
+  const renderErrorState = () => (
+    <DynamicContainer
+      className="flex items-center justify-center h-full w-full cursor-pointer"
+      onClick={() => {
+        setLoginState("initial");
+        setSize(SIZE_PRESETS.COMPACT);
+      }}
+    >
+      <div className="relative flex w-full items-center justify-between gap-6 px-4">
+        <AlertCircle className="h-8 w-8 text-red-400" />
+        <DynamicTitle className="my-auto text-xl font-black tracking-tighter text-white">
+          Connection Failed
+        </DynamicTitle>
+      </div>
+    </DynamicContainer>
+  );
+
+  if (!ready) {
+    return null;
+  }
+
+  const renderState = () => {
+    switch (loginState) {
+      case "connecting":
+        return renderLoadingState();
+      case "options":
+        return renderOptionsState();
+      case "connected":
+        return renderConnectedState();
+      case "error":
+        return renderErrorState();
       default:
         return renderCompactState();
     }
-  }
+  };
 
   return (
     <div className="h-full">
       <div className="flex flex-col gap-4 h-full">
-        <div className="absolute top-12 left-1">
-          <Button
-            onClick={() => {
-              const currentIndex = walletStates.indexOf(blobState.size);
-              const nextIndex = (currentIndex + 1) % walletStates.length;
-              setSize(walletStates[nextIndex]);
-            }}
-            disabled={blobState.isAnimating}
-            className="mt-4 p-2 border rounded-md"
-          >
-            Cycle States
-          </Button>
-        </div>
-
-        <div className="absolute top-1 right-2">
-          <Badge variant="outline">{blobState.size}</Badge>
-        </div>
-
-        <DynamicIsland id="wallet-blob">{renderState()}</DynamicIsland>
+        <DynamicIsland id="wallet-connect">{renderState()}</DynamicIsland>
       </div>
     </div>
   );
 };
 
-export function WalletDynamicIslandDemo() {
+export function WalletConnectDemo() {
+  const configuredLoginMethods = [
+    "email",
+    "wallet",
+    "google",
+    "twitter",
+    "discord",
+  ];
+
   return (
-    <DynamicIslandProvider initialSize="compact">
-      <WalletAction />
+    <DynamicIslandProvider initialSize={SIZE_PRESETS.COMPACT}>
+      <div>
+        <WalletAction loginMethods={configuredLoginMethods} />
+      </div>
     </DynamicIslandProvider>
   );
 }
