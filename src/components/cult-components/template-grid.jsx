@@ -25,7 +25,7 @@ export function TemplateGrid() {
         className="absolute left-4 top-4 rounded-[14px] border border-black/10 text-base text-neutral-800 md:left-6"
       >
         <IceCream className=" fill-[#D2F583]  stroke-1 text-neutral-800" />{" "}
-        Templates
+        Features
       </Badge>
       <div className="   flex flex-col justify-center  space-y-4 rounded-[34px]   p-3 pt-12">
         <div className="relative grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 ">
