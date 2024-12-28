@@ -34,8 +34,8 @@ const MyCourses = () => {
   return (
     <div className="px-6 h-full ">
       {courses.map((course, index) => (
-        <div className="pb-6">
-        <Course key={index} {...course} /></div>
+        <div className="pb-6" key={index}>
+        <Course {...course} /></div>
       ))}
     </div>
   );
