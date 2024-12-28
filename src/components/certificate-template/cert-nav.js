@@ -7,12 +7,25 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Image from "next/image";
+import Link from "next/link";
 
 const Nav = () => {
   return (
     <div className="max-w-[83rem] pt-6 mx-auto w-full">
       <div className="w-full flex items-center justify-between">
-        <div className="font-semibold">Certify Blocks</div>
+        <Link href={"/"} className=" flex gap-2 items-center">
+          <div className="flex space-x-4">
+            <Image
+              src="/logo.svg"
+              width={30}
+              height={30}
+              className="rounded-lg"
+            />
+          </div>
+          <div className="text-gray-900 font-semibold ">Certify Blocks</div>
+        </Link>
+
         <DropdownMenu>
           <DropdownMenuTrigger className="focus-visible:outline-none">
             <div className="bg-white border rounded-lg h-12 flex items-center gap-3 px-3 cursor-pointer hover:bg-gray-50 transition-colors">
