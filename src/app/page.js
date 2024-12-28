@@ -94,7 +94,7 @@ const Page = () => {
             </FadeIn>
             <FadeIn>
               <PageActions>
-                <Link href="/certificates" className={cn(buttonVariants())}>
+                <Link href="/dashboard/home" className={cn(buttonVariants())}>
                   Get Started
                 </Link>
                 <Link
