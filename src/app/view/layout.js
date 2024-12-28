@@ -21,11 +21,11 @@ export default function ExploreLayout({ children }) {
         </div>
 
         {/* RIGHT SIDEBAR */}
-        <div className="min-h-full p-4">
+        {/* <div className="min-h-full p-4">
           <div className="w-[400px] bg-[#F3EBE5] border h-full rounded-3xl overflow-auto scrollbar-hide">
             <div className="h-full"><RightSidebar /></div>
           </div>
-        </div>
+        </div> */}
       </div>
     </FHEWrapper>
   );

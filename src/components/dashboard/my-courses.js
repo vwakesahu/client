@@ -6,6 +6,7 @@ import { LightningBoltIcon } from "@radix-ui/react-icons";
 const MyCourses = () => {
   const courses = [
     {
+      id: 1245,
       title: "Flutter Masterclass (Dart, APIs, Firebase & More)",
       category: "IT & Software",
       rating: 4.8,
@@ -15,9 +16,11 @@ const MyCourses = () => {
         darker: "#EF98A1",
         lighter: "#F3C5C5",
       },
+      link: "/",
       iconSvg: <MenuIcon size={10} />,
     },
     {
+      id: 1245,
       title: "Advanced JavaScript Concepts",
       category: "Web Development",
       rating: 4.9,
@@ -27,6 +30,7 @@ const MyCourses = () => {
         darker: "#F8B577",
         lighter: "#FAE0C1",
       },
+      link: "/",
       iconSvg: <LightningBoltIcon />,
     },
   ];
@@ -35,7 +39,8 @@ const MyCourses = () => {
     <div className="px-6 h-full ">
       {courses.map((course, index) => (
         <div className="pb-6" key={index}>
-        <Course {...course} /></div>
+          <Course {...course} link={`/dashboard/${course.id}`} />
+        </div>
       ))}
     </div>
   );
