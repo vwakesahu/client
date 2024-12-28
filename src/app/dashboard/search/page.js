@@ -12,6 +12,7 @@ const SearchPage = () => {
 
   const searchResults = [
     {
+      id: 124,
       title: "React Fundamentals Masterclass Oneshot",
       category: "Web Development",
       rating: 4.7,
@@ -25,6 +26,7 @@ const SearchPage = () => {
       iconSvg: <Search size={10} />,
     },
     {
+      id: 124,
       title: "Flutter Masterclass (Dart, APIs, Firebase & More)",
       category: "IT & Software",
       rating: 4.8,
@@ -38,6 +40,7 @@ const SearchPage = () => {
       iconSvg: <MenuIcon size={10} />,
     },
     {
+      id: 124,
       title: "Advanced JavaScript Concepts Masterclass",
       category: "Web Development",
       rating: 4.9,
@@ -51,6 +54,7 @@ const SearchPage = () => {
       iconSvg: <LightningBoltIcon />,
     },
     {
+      id: 124,
       title: "Advanced JavaScript Concepts Masterclass",
       category: "Web Development",
       rating: 4.9,
@@ -64,6 +68,7 @@ const SearchPage = () => {
       iconSvg: <LightningBoltIcon />,
     },
     {
+      id: 124,
       title: "Advanced JavaScript Concepts Masterclass",
       category: "Web Development",
       rating: 4.9,
@@ -106,7 +111,7 @@ const SearchPage = () => {
   };
 
   return (
-    <div className="mt-6">
+    <div className="mt-24">
       <h1 className="text-4xl mb-8">Find Your Next Course</h1>
 
       <form onSubmit={handleSearch} className="mb-8">
@@ -130,7 +135,7 @@ const SearchPage = () => {
 
       <div className="grid grid-cols-2 gap-4">
         {filteredResults.map((course, index) => (
-          <Course key={index} {...course} progress={0} />
+          <Course key={index} {...course} progress={0} link={`/view/${course.id}`} />
         ))}
       </div>
     </div>
