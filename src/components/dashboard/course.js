@@ -47,8 +47,8 @@ export const Course = ({
 
         {/* Content */}
         <div className="relative z-10 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3 mb-6">
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-3 ">
               <div className="bg-white p-2 rounded-full">{iconSvg}</div>
               <span className="text-sm font-medium">{category}</span>
             </div>
