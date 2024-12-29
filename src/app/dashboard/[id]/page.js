@@ -83,7 +83,10 @@ const Page = () => {
   const allLessonsCompleted = completedLessons.length === course.lessons.length;
 
   return (
-    <div ref={parentRef} className="max-w-full mx-auto mt-20 px-8 pb-20 relative">
+    <div
+      ref={parentRef}
+      className="max-w-full mx-auto mt-20 px-8 pb-20 relative"
+    >
       <Link href="/courses" className="flex items-center text-gray-600 mb-12">
         <ChevronLeft size={20} />
         <span className="ml-2 text-sm">Back to Courses</span>
@@ -141,13 +144,16 @@ const Page = () => {
 
       {allLessonsCompleted && (
         <div className="sticky bottom-0 left-0 right-0 mt-8">
-          <div className="bg-[#F8B577] text-black py-4 px-8 flex justify-between items-center rounded-t-lg">
+          <div className="border  border-black/20 bg-white/60 backdrop-blur-xl text-black py-4 px-8 flex justify-between items-center rounded-t-lg">
             <p className="text-lg font-semibold">
-              Congratulations! You've completed all lessons.
+              🎉 Congratulations! You've completed all lessons.
             </p>
-            <button className="bg-white px-4 py-2 rounded-lg font-medium">
+            <Link
+              href={`/certificate/generate/${id}`}
+              className="bg-black text-white px-4 py-2 rounded-lg font-medium"
+            >
               Generate Certificate
-            </button>
+            </Link>
           </div>
         </div>
       )}

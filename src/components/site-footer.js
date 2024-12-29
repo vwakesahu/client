@@ -7,7 +7,8 @@ export function SiteFooter() {
   if (
     pathname === "/explore" ||
     pathname.startsWith("/dashboard") ||
-    pathname.startsWith("/view")
+    pathname.startsWith("/view") ||
+    pathname.startsWith("/certificate")
   )
     return <></>;
   return (
@@ -21,7 +22,7 @@ export function SiteFooter() {
             rel="noreferrer"
             className="font-medium underline underline-offset-4"
           >
-            xx
+            Swayam and Vivek
           </a>
           . The source code is available on{" "}
           <a

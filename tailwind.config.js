@@ -10,6 +10,7 @@ module.exports = {
     extend: {
       colors: {
         background: "hsl(var(--background))",
+        main: "#F3EBE5",
         foreground: "hsl(var(--foreground))",
         card: {
           DEFAULT: "hsl(var(--card))",

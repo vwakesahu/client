@@ -62,9 +62,9 @@ const Certificate = () => {
   };
 
   return (
-    <div className="h-screen p-4">
-      <div className="md:h-[60%] h-[45%] bg-[#FFF7E4] rounded-3xl px-4">
-        <Nav />
+    <div>
+      <div className="md:h-[60%] h-[45%] rounded-3xl px-4">
+        {/* <Nav /> */}
         <div className="grid place-items-center mt-20">
           <p className="text-4xl md:text-6xl font-semibold tracking-tighter text-center">
             Here's your certificate! 🎉

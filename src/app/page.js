@@ -16,11 +16,20 @@ import { GradientHeading } from "@/components/ui/gradient-heading";
 import Navbar from "@/components/site-header";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useFullscreen } from "@/hooks/use-fullscreen";
+import GetStarted from "@/components/get-started";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
   const isMobile = useIsMobile();
   const { isFullscreen, toggleFullscreen } = useFullscreen();
   const [isAnnouncementSticky, setIsAnnouncementSticky] = useState(false);
+  const router = useRouter()
+  const navigateGetStarted = () => {
+    setTimeout(() => {
+      router.push('/dashboard/home')
+    }, 2000);
+  }
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -40,6 +49,8 @@ const Page = () => {
       toggleFullscreen();
     }
   }, [isMobile]);
+
+
 
   return (
     <>
@@ -93,20 +104,15 @@ const Page = () => {
               </div>
             </FadeIn>
             <FadeIn>
-              <PageActions>
-                <Link href="/dashboard/home" className={cn(buttonVariants())}>
-                  Get Started
-                </Link>
-                <Link
-                  target="_blank"
-                  rel="noreferrer"
-                  href={"https://github.com/Certify-Labs/docs"}
-                  className={cn(buttonVariants({ variant: "outline" }))}
+              <div className="w-[600px] relative flex items-center">
+                <div className="py-36"><div
+                  href="/dashboard/home"
+                  className={"z-50 absolute -top-16 w-full"}
                 >
-                  <Github className="mr-2 h-4 w-4" />
-                  GitHub
-                </Link>
-              </PageActions>
+                  <GetStarted onClickStarted={navigateGetStarted} />
+                </div></div>
+                
+              </div>
             </FadeIn>
           </PageHeader>
 
@@ -120,9 +126,9 @@ const Page = () => {
                 <TemplateGrid />
               </div>
 
-              <div className="mx-auto max-w-4xl rounded-[24px] border border-black/5 p-2 shadow-sm md:rounded-b-[44px] md:rounded-t-[20px]">
+              {/* <div className="mx-auto max-w-4xl rounded-[24px] border border-black/5 p-2 shadow-sm md:rounded-b-[44px] md:rounded-t-[20px]">
                 <PlugCardGrid />
-              </div>
+              </div> */}
             </section>
           </FadeIn>
         </div>

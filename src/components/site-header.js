@@ -4,13 +4,21 @@ import { Github, X, Wallet } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
-const Navbar = () => {
+const Navbar = ({ isAnnouncementSticky = false }) => {
   return (
-    <nav className="w-full px-4 sticky top-0 z-50">
+    <nav className={`w-full px-4 sticky top-0 z-50`}>
       <div className="mx-auto flex h-16 max-w-screen-2xl items-center justify-between relative">
-        <Link href={'/'} className="md:flex w-full hidden items-center space-x-2 z-20">
+        <Link
+          href={"/"}
+          className="md:flex w-full hidden items-center space-x-2 z-20"
+        >
           <div className="flex space-x-4">
-            <Image src="/logo.svg" width={30} height={30} className="rounded-lg" />
+            <Image
+              src="/smile.svg"
+              width={30}
+              height={30}
+              className="rounded-lg"
+            />
           </div>
           <div className="text-gray-900 font-semibold ">Certify Blocks</div>
         </Link>
