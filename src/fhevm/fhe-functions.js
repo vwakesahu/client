@@ -1,26 +1,44 @@
-import { createInstance, initFhevm } from "fhevmjs";
+import { isAddress } from "ethers";
+import { initFhevm, createInstance } from "fhevmjs/bundle";
 
-let fhevmInstance = null;
+const ACL_ADDRESS = "0x9479B455904dCccCf8Bc4f7dF8e9A1105cBa2A8e";
+const KMS_ADDRESS = "0x904Af2B61068f686838bD6257E385C2cE7a09195";
+
+let instancePromise;
+let instance;
+const keypairs = {};
+
+export const init = async () => {
+  await initFhevm({ thread: navigator.hardwareConcurrency });
+};
 
 export const createFhevmInstance = async () => {
-  if (!fhevmInstance) {
-    await initFhevm();
-    fhevmInstance = await createInstance({
-      chainId: 21097,
-      networkUrl: "https://validator.rivest.inco.org/",
-      gatewayUrl: "https://gateway.rivest.inco.org/",
-      aclAddress: "0x2Fb4341027eb1d2aD8B5D9708187df8633cAFA92",
-    });
-  }
-  return fhevmInstance;
+  if (instancePromise) return instancePromise;
+
+  instancePromise = createInstance({
+    network: window.ethereum,
+    aclContractAddress: ACL_ADDRESS,
+    kmsContractAddress: KMS_ADDRESS,
+    gatewayUrl: "https://gateway.sepolia.zama.ai/",
+  });
+
+  instance = await instancePromise;
+  return instance;
 };
 
-export const getFhevmInstance = async () => {
-  if (!fhevmInstance) {
-    fhevmInstance = await createFhevmInstance();
-  }
-  return fhevmInstance;
+export const setKeypair = (contractAddress, userAddress, keypair) => {
+  if (!isAddress(contractAddress) || !isAddress(userAddress)) return;
+  if (!keypairs[userAddress]) keypairs[userAddress] = {};
+  keypairs[userAddress][contractAddress] = keypair;
 };
 
-export const toHexString = (bytes) =>
-  bytes.reduce((str, byte) => str + byte.toString(16).padStart(2, "0"), "");
+export const getKeypair = (contractAddress, userAddress) => {
+  if (!isAddress(contractAddress) || !isAddress(userAddress)) return null;
+  return keypairs[userAddress]
+    ? keypairs[userAddress][contractAddress] || null
+    : null;
+};
+
+export const getInstance = () => {
+  return instance;
+};
