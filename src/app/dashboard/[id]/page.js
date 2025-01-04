@@ -20,19 +20,19 @@ const Page = () => {
 
   const course = {
     id: id,
-    title: "Flutter Masterclass (Dart, APIs, Firebase & More)",
+    title: "Blockchain Tutorial for Beginners",
     category: "IT & Software",
     lessons: [
       {
-        title: "Introduction to Flutter",
-        duration: "10:30",
-        videoId: "pTJJsmejUOQ",
+        title: "What is Web3?",
+        duration: "8:26",
+        videoId: "2uYuWiICCM0",
         color: colorSchemes[0].lighter,
       },
       {
-        title: "Dart Fundamentals",
-        duration: "15:45",
-        videoId: "Ej_Pcr4uC2Q",
+        title: "Why Blockchain? | Prerequisites",
+        duration: "7:33",
+        videoId: "Dh7OyB5lJ08",
         color: colorSchemes[1].lighter,
       },
       {
@@ -48,31 +48,36 @@ const Page = () => {
         color: colorSchemes[3].lighter,
       },
       {
-        title: "Firebase Integration",
-        duration: "25:00",
-        videoId: "sfA3NWDBPZ4",
+        title: "What is Blockchain?",
+        duration: "9:48",
+        videoId: "frK972EBj38",
         color: colorSchemes[0].lighter,
       },
       {
-        title: "State Management in Flutter",
-        duration: "22:10",
-        videoId: "3tm-R7ymwhc",
+        title: "Cryptography | Blockchain",
+        duration: "05:38",
+        videoId: "2sPpuMclSQU",
         color: colorSchemes[1].lighter,
       },
       {
-        title: "Creating Custom Widgets",
-        duration: "18:55",
-        videoId: "J4BVaXkwmM8",
+        title: "Types of Cryptography | Blockchain",
+        duration: "4:32",
+        videoId: "AmlwZyd4ouM",
         color: colorSchemes[2].lighter,
       },
       {
-        title: "Animations in Flutter",
-        duration: "20:30",
-        videoId: "GXIJJkq_H8g",
+        title: "Digital Signature | Blockchain",
+        duration: "3:36",
+        videoId: "06Un2_F4Y0E",
         color: colorSchemes[3].lighter,
       },
     ],
   };
+
+  const videoIds = course.lessons.map((lesson) => lesson.videoId);
+
+  // When all lessons are completed, encode the video IDs for URL
+  const encodedVideoIds = encodeURIComponent(JSON.stringify(videoIds));
 
   useEffect(() => {
     if (!completedLessons.includes(activeLesson)) {
@@ -149,10 +154,11 @@ const Page = () => {
               🎉 Congratulations! You've completed all lessons.
             </p>
             <Link
-              href={`/certificate/generate/${id}`}
+              // href={`/certificate/generate/${id}`}
+              href={`/certificate/assesment/${id}?videos=${encodedVideoIds}`}
               className="bg-black text-white px-4 py-2 rounded-lg font-medium"
             >
-              Generate Certificate
+              Give Assesment
             </Link>
           </div>
         </div>

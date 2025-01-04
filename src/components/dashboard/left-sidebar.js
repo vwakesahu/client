@@ -46,7 +46,7 @@ const LeftSidebar = () => {
             />
           </div>
           <div className="mx-auto flex justify-center">
-            <IconButton icon={ShoppingBag} />
+            <IconButton icon={ShoppingBag} href="/dashboard/edustore" isActive={ pathname === "/dashboard/edustore" } />
           </div>
         </div>
 

@@ -7,8 +7,8 @@ const MyCourses = () => {
   const courses = [
     {
       id: 1245,
-      title: "Flutter Masterclass (Dart, APIs, Firebase & More)",
-      category: "IT & Software",
+      title: "Blockchain Tutorial for Beginners",
+      category: "Web3",
       rating: 4.8,
       students: 9530,
       progress: 20,
