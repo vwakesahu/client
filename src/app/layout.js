@@ -4,11 +4,12 @@ import Navbar from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import PrivyWrapper from "@/privy/privyProvider";
 import { FHEWrapper } from "@/fhevm/fheWrapper";
+import OCConnectWrapper from "@/components/ocid-wrapper";
 
 const poppins = Poppins({
-  subsets: ['latin'],
-  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
-  variable: '--font-poppins',
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-poppins",
 });
 
 export const metadata = {
@@ -23,12 +24,12 @@ export default function RootLayout({ children }) {
         <>
           {/* <Navbar /> */}
           <PrivyWrapper>
-            <FHEWrapper>
+            <OCConnectWrapper>
               <>
                 <main className="flex-1">{children}</main>
                 <SiteFooter />
               </>
-            </FHEWrapper>
+            </OCConnectWrapper>
           </PrivyWrapper>
         </>
       </body>

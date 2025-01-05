@@ -1,18 +1,9 @@
+"use client";
+
 import { useState, useEffect } from "react";
-import {
-  Wallet,
-  Loader,
-  CheckCircle2,
-  Mail,
-  Phone,
-  User,
-  Shield,
-  AlertCircle,
-  Twitter,
-  Github,
-  MessageCircle,
-} from "lucide-react";
+import { Wallet, Loader, Shield, AlertCircle, Mail, User } from "lucide-react";
 import { usePrivy } from "@privy-io/react-auth";
+import { useOCAuth } from "@opencampus/ocid-connect-js";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -29,64 +20,75 @@ import { useWalletContext } from "@/privy/walletContext";
 
 const LOGIN_METHOD_ICONS = {
   email: Mail,
-  sms: Phone,
   wallet: Wallet,
   google: User,
-  twitter: Twitter,
-  github: Github,
-  discord: MessageCircle,
+  ocid: Shield,
 };
 
 const LOGIN_METHOD_NAMES = {
   email: "Email",
-  sms: "Phone",
   wallet: "Wallet",
   google: "Google",
-  twitter: "Twitter",
-  github: "GitHub",
-  discord: "Discord",
+  ocid: "OCID",
 };
 
-const WalletAction = ({ loginMethods = ["email", "wallet", "google"] }) => {
+const CombinedAuth = () => {
   const { setSize } = useDynamicIslandSize();
   const { address } = useWalletContext();
-  const { authenticated, ready, login, logout, user } = usePrivy();
+  const {
+    authenticated: privyAuthenticated,
+    ready,
+    login: privyLogin,
+    logout: privyLogout,
+  } = usePrivy();
+  const { authState: ocidAuthState, ocAuth, OCId } = useOCAuth();
 
   const [loginState, setLoginState] = useState("initial");
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Helper function to format wallet address
+  // Formatting helpers
   const formatAddress = (address) => {
     if (!address) return "";
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
   };
 
-  // Handle Privy auth state changes
+  const formatOCID = (ocid) => {
+    if (!ocid) return "";
+    return ocid.length > 10 ? `${ocid.slice(0, 10)}...` : `${ocid}`;
+  };
+
+  const getDisplayText = () => {
+    if (OCId) {
+      return formatOCID(OCId);
+    }
+    return formatAddress(address);
+  };
+
+  // Handle authentication state changes
   useEffect(() => {
-    if (authenticated) {
+    if (privyAuthenticated && ocidAuthState.isAuthenticated) {
       setLoginState("connected");
       setSize(SIZE_PRESETS.COMPACT);
+      setIsProcessing(false);
+    } else if (privyAuthenticated && !ocidAuthState.isAuthenticated) {
+      setLoginState("need_ocid");
+      setSize(SIZE_PRESETS.MEDIUM);
       setIsProcessing(false);
     } else {
       setLoginState("initial");
       setSize(SIZE_PRESETS.COMPACT);
       setIsProcessing(false);
     }
-  }, [authenticated, setSize]);
+  }, [privyAuthenticated, ocidAuthState?.isAuthenticated, setSize]);
 
   const showLoginOptions = async () => {
     try {
       setIsProcessing(true);
       setLoginState("connecting");
       setSize(SIZE_PRESETS.LARGE);
-
-      // Brief delay for animation
       await new Promise((resolve) => setTimeout(resolve, 800));
-
-      if (!authenticated) {
-        setLoginState("options");
-        setSize(SIZE_PRESETS.MEDIUM);
-      }
+      setLoginState("options");
+      setSize(SIZE_PRESETS.MEDIUM);
     } catch (error) {
       console.error("Error showing options:", error);
       setLoginState("error");
@@ -96,18 +98,17 @@ const WalletAction = ({ loginMethods = ["email", "wallet", "google"] }) => {
     }
   };
 
-  const handleLogin = async (method) => {
+  const handlePrivyLogin = async (method) => {
     try {
       setIsProcessing(true);
       setLoginState("connecting");
       setSize(SIZE_PRESETS.LARGE);
 
-      // Call Privy login and wait for it to complete
-      await login({
+      await privyLogin({
         loginMethods: [method],
         onSuccess: () => {
-          setLoginState("connected");
-          setSize(SIZE_PRESETS.COMPACT);
+          setLoginState("need_ocid");
+          setSize(SIZE_PRESETS.MEDIUM);
         },
         onError: (error) => {
           console.error("Login error:", error);
@@ -124,10 +125,28 @@ const WalletAction = ({ loginMethods = ["email", "wallet", "google"] }) => {
     }
   };
 
+  const handleOCIDLogin = async () => {
+    try {
+      setIsProcessing(true);
+      setLoginState("connecting");
+      setSize(SIZE_PRESETS.LARGE);
+
+      await ocAuth.signInWithRedirect({
+        state: "opencampus",
+        wallet_address: address, // Pass the connected wallet address
+      });
+    } catch (error) {
+      console.error("OCID localhostgin error:", error);
+      setLoginState("error");
+      setSize(SIZE_PRESETS.COMPACT_MEDIUM);
+      setIsProcessing(false);
+    }
+  };
+
   const handleDisconnect = async () => {
     try {
       setIsProcessing(true);
-      await logout();
+      await Promise.all([privyLogout(), ocAuth.signOut()]);
       setLoginState("initial");
       setSize(SIZE_PRESETS.COMPACT);
     } catch (error) {
@@ -175,16 +194,16 @@ const WalletAction = ({ loginMethods = ["email", "wallet", "google"] }) => {
         Choose Login Method
       </DynamicTitle>
       <DynamicDescription className="leading-5 text-neutral-500 pl-3">
-        Select your preferred way to connect
+        Connect your wallet first
       </DynamicDescription>
 
       <DynamicDiv className="flex flex-col mt-auto space-y-1 mb-2 bg-neutral-700 p-2 rounded-b-2xl">
-        {["email", "wallet"].map((method) => {
-          const IconComponent = LOGIN_METHOD_ICONS[method] || User;
+        {["wallet", "email"].map((method) => {
+          const IconComponent = LOGIN_METHOD_ICONS[method];
           return (
             <Button
               key={method}
-              onClick={() => handleLogin(method)}
+              onClick={() => handlePrivyLogin(method)}
               disabled={isProcessing}
               className="mt-1"
             >
@@ -193,6 +212,28 @@ const WalletAction = ({ loginMethods = ["email", "wallet", "google"] }) => {
             </Button>
           );
         })}
+      </DynamicDiv>
+    </DynamicContainer>
+  );
+
+  const renderNeedOCIDState = () => (
+    <DynamicContainer className="flex flex-col justify-between px-2 pt-4 text-left text-white h-full">
+      <DynamicTitle className="text-2xl pl-3 font-black tracking-tighter">
+        Connect OCID
+      </DynamicTitle>
+      <DynamicDescription className="leading-5 text-neutral-500 pl-3">
+        Wallet connected: {formatAddress(address)}
+      </DynamicDescription>
+
+      <DynamicDiv className="flex flex-col mt-auto space-y-1 mb-2 bg-neutral-700 p-2 rounded-b-2xl">
+        <Button
+          onClick={handleOCIDLogin}
+          disabled={isProcessing}
+          className="mt-1"
+        >
+          <Shield className="mr-2 h-4 w-4 fill-cyan-400 text-cyan-400" />
+          Connect OCID
+        </Button>
       </DynamicDiv>
     </DynamicContainer>
   );
@@ -209,8 +250,7 @@ const WalletAction = ({ loginMethods = ["email", "wallet", "google"] }) => {
             <Shield className="h-5 w-5 fill-cyan-400 text-cyan-400" />
           </DynamicDescription>
           <DynamicDescription className="w-full text-center my-auto text-lg font-bold text-white">
-            {/* {getDisplayName()} */}
-            {formatAddress(address)}
+            {getDisplayText()}
           </DynamicDescription>
         </div>
       </Button>
@@ -244,6 +284,8 @@ const WalletAction = ({ loginMethods = ["email", "wallet", "google"] }) => {
         return renderLoadingState();
       case "options":
         return renderOptionsState();
+      case "need_ocid":
+        return renderNeedOCIDState();
       case "connected":
         return renderConnectedState();
       case "error":
@@ -263,18 +305,10 @@ const WalletAction = ({ loginMethods = ["email", "wallet", "google"] }) => {
 };
 
 export function WalletConnectDemo() {
-  const configuredLoginMethods = [
-    "email",
-    "wallet",
-    "google",
-    "twitter",
-    "discord",
-  ];
-
   return (
     <DynamicIslandProvider initialSize={SIZE_PRESETS.COMPACT}>
       <div>
-        <WalletAction loginMethods={configuredLoginMethods} />
+        <CombinedAuth />
       </div>
     </DynamicIslandProvider>
   );
