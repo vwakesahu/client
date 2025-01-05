@@ -1,16 +1,18 @@
 "use client";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useState, useEffect, useRef } from "react";
 import { ChevronLeft, Play, BookOpen, Coins } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import BalanceComponent from "@/components/balance-comp";
+import axios from "axios";
 
 const Page = () => {
   const { id } = useParams();
   const [activeLesson, setActiveLesson] = useState(0);
   const [completedLessons, setCompletedLessons] = useState([]);
   const parentRef = useRef(null);
+  const router = useRouter();
 
   const colorSchemes = [
     { lighter: "#F3C5C5", darker: "#EF98A1" },
@@ -87,6 +89,32 @@ const Page = () => {
 
   const allLessonsCompleted = completedLessons.length === course.lessons.length;
 
+  const getRandomVideoId = () => {
+    if (!videoIds || videoIds.length === 0) return null;
+    const randomIndex = Math.floor(Math.random() * videoIds.length);
+    return videoIds[randomIndex];
+  };
+  const getQuestionsFromAgent = () => {
+    try {
+      const randomVideoId = getRandomVideoId(videoIds);
+
+      try {
+        const { data } = axios.post("/api/questions/generate", {
+          videoUrl: `https://www.youtube.com/watch?v=${randomVideoId}`,
+          userAddress: "0x6518D50aDc9036Df37119eA465a8159E34417E2E",
+          videoData: { videoIds },
+          courseId: Number(id),
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    } catch (error) {
+      // setError(error.message || "Failed to generate questions");
+      console.error("Error fetching questions:", error);
+    } finally {
+      // setIsLoading(false);
+    }
+  };
   return (
     <div
       ref={parentRef}
@@ -157,13 +185,17 @@ const Page = () => {
             <p className="text-lg font-semibold">
               🎉 Congratulations! You've completed all lessons.
             </p>
-            <Link
+            <div
+              onClick={() => {
+                getQuestionsFromAgent();
+                router.replace(`/certificate/assesment`);
+              }}
               // href={`/certificate/generate/${id}`}
-              href={`/certificate/assesment/${id}?videos=${encodedVideoIds}`}
+              // href={`/certificate/assesment/${id}?videos=${encodedVideoIds}`}
               className="bg-black text-white px-4 py-2 rounded-lg font-medium"
             >
               Give Assesment
-            </Link>
+            </div>
           </div>
         </div>
       )}

@@ -39,7 +39,7 @@ const MyCourses = () => {
     <div className="px-6 h-full ">
       {courses.map((course, index) => (
         <div className="pb-6" key={index}>
-          <Course {...course} link={`/dashboard/${course.id}`} />
+        <Course {...course} link={`/dashboard/${course.id}`} />
         </div>
       ))}
     </div>

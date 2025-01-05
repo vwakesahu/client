@@ -1,8 +1,8 @@
 "use client";
-import { useParams, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { ChevronLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -12,56 +12,67 @@ const AssessmentPage = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [showResults, setShowResults] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [assessmentData, setAssessmentData] = useState(null);
   const [questions, setQuestions] = useState([]);
 
-  const searchParams = useSearchParams();
-  const encodedVideos = searchParams.get("videos");
-  const videoIds = encodedVideos
-    ? JSON.parse(decodeURIComponent(encodedVideos))
-    : [];
-
-  const getRandomVideoId = (videoIds) => {
-    if (!videoIds || videoIds.length === 0) return null;
-    const randomIndex = Math.floor(Math.random() * videoIds.length);
-    return videoIds[randomIndex];
-  };
-
-  const getQuestionsFromAgent = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const randomVideoId = getRandomVideoId(videoIds);
-      if (!randomVideoId) {
-        throw new Error("No video IDs available");
-      }
-
-      const { data } = await axios.post("/api/questions/generate", {
-        videoUrl: `https://www.youtube.com/watch?v=${randomVideoId}`,
-      });
-
-      if (data.success && data.data) {
-        const formattedQuestions = data.data.map((q) => ({
-          question: q.question,
-          options: q.options.map((opt) => opt.substring(3)), // Remove A), B), etc.
-          correctAnswer: q.answer.charCodeAt(0) - 65, // Convert A,B,C,D to 0,1,2,3
-        }));
-        setQuestions(formattedQuestions);
-      } else {
-        throw new Error("Invalid response format");
-      }
-    } catch (error) {
-      setError(error.message || "Failed to generate questions");
-      console.error("Error fetching questions:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
-    getQuestionsFromAgent();
-  }, []);
+    const fetchAssessmentData = async () => {
+      try {
+        setIsLoading(true);
+        const [courseId] = id.split("_").map(Number);
+
+        const { data } = await axios.get(
+          "/api/questions/0x6518D50aDc9036Df37119eA465a8159E34417E2E"
+        );
+
+        if (!data?.data?.courses) {
+          throw new Error("Invalid data format");
+        }
+
+        const course = data.data.courses.find((c) => c.courseId === courseId);
+        if (!course) {
+          throw new Error("Course not found");
+        }
+
+        // Sort questions by createdAt timestamp in descending order
+        const sortedQuestions = [...course.questions].sort((a, b) => {
+          const timeA = a.createdAt.seconds + a.createdAt.nanoseconds / 1e9;
+          const timeB = b.createdAt.seconds + b.createdAt.nanoseconds / 1e9;
+          return timeB - timeA;
+        });
+
+        // Get the latest assessment
+        const latestAssessment = sortedQuestions[0];
+        if (!latestAssessment) {
+          throw new Error("No assessments found");
+        }
+
+        console.log(course)
+
+        setAssessmentData(course.courseDetails);
+
+        // Transform questions to match the expected format
+        const formattedQuestions = latestAssessment.questions.map((q) => ({
+          question: q.question,
+          options: q.options.map((opt) => opt.replace(/^[A-D]\)\s*/, "")),
+          correctAnswer: q.answer.charCodeAt(0) - 65, // Convert 'A', 'B', 'C', 'D' to 0, 1, 2, 3
+        }));
+
+        setQuestions(formattedQuestions);
+      } catch (err) {
+        setError(err.message || "Failed to fetch assessment data");
+        console.error("Error fetching assessment:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchAssessmentData();
+    }
+  }, [id]);
 
   const handleAnswerSelect = (answerIndex) => {
     setSelectedAnswers({
@@ -90,7 +101,7 @@ const AssessmentPage = () => {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Generating assessment questions...</p>
+          <p className="text-gray-600">Loading assessment questions...</p>
         </div>
       </div>
     );
@@ -98,14 +109,14 @@ const AssessmentPage = () => {
 
   if (error) {
     return (
-      <div className="max-w-4xl mx-auto mt-20 px-8">
+      <div className="max-w-4xl mx-auto mt-20">
         <Alert variant="destructive">
           <AlertDescription>
             {error}
             <Button
               variant="outline"
               className="ml-4"
-              onClick={getQuestionsFromAgent}
+              onClick={() => window.location.reload()}
             >
               Try Again
             </Button>
@@ -117,14 +128,14 @@ const AssessmentPage = () => {
 
   if (!questions.length) {
     return (
-      <div className="max-w-4xl mx-auto mt-20 px-8">
+      <div className="max-w-4xl mx-auto mt-20">
         <Alert>
           <AlertDescription>
             No questions available. Please try again later.
             <Button
               variant="outline"
               className="ml-4"
-              onClick={getQuestionsFromAgent}
+              onClick={() => window.location.reload()}
             >
               Refresh
             </Button>
@@ -134,10 +145,12 @@ const AssessmentPage = () => {
     );
   }
 
+  const [courseId] = id.split("_");
+
   return (
-    <div className="max-w-4xl mx-auto mt-20 px-8 pb-20">
+    <div className="max-w-4xl mx-auto mt-20 pb-20">
       <Link
-        href={`/courses/${id}`}
+        href={`/certificate/assesment`}
         className="flex items-center text-gray-600 mb-12"
       >
         <ChevronLeft size={20} />
@@ -146,7 +159,7 @@ const AssessmentPage = () => {
 
       <div className="mb-12">
         <h1 className="text-3xl font-light mb-2">Technical Assessment</h1>
-        <p className="text-gray-600">Flutter Development Fundamentals</p>
+        <p className="text-gray-600">{assessmentData?.title}</p>
       </div>
 
       {!showResults ? (
@@ -301,7 +314,7 @@ const AssessmentPage = () => {
 
           <div className="mt-8 flex justify-between">
             <Link
-              href={`/courses/${id}`}
+              href={`/courses/${courseId}`}
               className="px-6 py-2 border border-gray-200 rounded hover:border-gray-300"
             >
               Return to Course
