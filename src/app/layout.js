@@ -12,7 +12,7 @@ const poppins = Poppins({
 });
 
 export const metadata = {
-  title: "Certify Blocks",
+  title: "Learn And Earn",
   description: "Confidential Certificates made easy.",
 };
 

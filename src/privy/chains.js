@@ -1,26 +1,26 @@
-export const chainsName = { inco: "Inco" };
+export const chainsName = { educhain: "EDU Chain" };
 
-export const incoNetwork = {
-  id: 21097,
-  network: "Rivest",
-  name: "Rivest Testnet",
+export const educhainNetwork = {
+  id: 656476,
+  network: "EDU Chain Testnet",
+  name: "EDU Chain Testnet",
   nativeCurrency: {
-    name: "INCO",
-    symbol: "INCO",
+    name: "EDU",
+    symbol: "EDU",
     decimals: 18,
   },
   rpcUrls: {
     default: {
-      http: ["https://validator.rivest.inco.org"],
+      http: ["rpc.open-campus-codex.gelato.digital"],
     },
     public: {
-      http: ["https://validator.rivest.inco.org"],
+      http: ["rpc.open-campus-codex.gelato.digital"],
     },
   },
   blockExplorers: {
     default: {
       name: "Explorer",
-      url: "https://explorer.rivest.inco.org",
+      url: "edu-chain-testnet.blockscout.com",
     },
   },
 };

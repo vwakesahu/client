@@ -135,7 +135,7 @@ const Profile = () => {
           <AlertDialogContent className="max-w-2xl">
             <AlertDialogHeader>
               <AlertDialogTitle className="text-3xl font-light mb-2">
-                Create New Course
+                Launch New Course
               </AlertDialogTitle>
               <AlertDialogDescription className="text-gray-600">
                 Fill in the course details and add your video content below.
@@ -151,7 +151,7 @@ const Profile = () => {
                 Cancel
               </AlertDialogCancel>
               <AlertDialogAction className="bg-black hover:bg-gray-900 text-white">
-                Create Course
+                Launch Course
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

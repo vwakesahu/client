@@ -20,7 +20,7 @@ const Navbar = ({ isAnnouncementSticky = false }) => {
               className="rounded-lg"
             />
           </div>
-          <div className="text-gray-900 font-semibold ">Certify Blocks</div>
+          <div className="text-gray-900 font-semibold ">Learn & Earn</div>
         </Link>
         <div className="absolute inset-x-0 h-full">
           <div className="relative h-20 w-full overflow-hidden rounded-b-2xl">

@@ -88,7 +88,7 @@ const Page = () => {
                   weight="bold"
                   className="text-center text-xl font-bold tracking-tighter lg:leading-[0.5rem]"
                 >
-                  <br className="hidden md:block" /> Certificates
+                  <br className="hidden md:block" /> Learning
                 </GradientHeading>
               </div>
             </FadeIn>
@@ -96,7 +96,7 @@ const Page = () => {
             <FadeIn>
               <div className="flex max-w-2xl flex-wrap items-center justify-center gap-1 text-left text-base  text-foreground md:pt-8 md:text-xl md:font-normal md:leading-6">
                 <span className="text-center">
-                  At Certify Labs, we're revolutionizing certification with
+                  At Learn and Fun, we're revolutionizing certification with
                   cutting-edge privacy and access control, powered by Fully
                   Homomorphic Encryption (FHE) and advanced symmetric
                   algorithms.

@@ -1,4 +1,4 @@
-import { incoNetwork } from "./chains";
+import { educhainNetwork } from "./chains";
 
 export const privyConfig = {
   appId: "cm2vpnu5606elij5dxqxknyhx",
@@ -10,8 +10,8 @@ export const privyConfig = {
       walletList: ["metamask", "detected_wallets", "rainbow"],
       theme: "dark",
     },
-    defaultChain: incoNetwork,
-    supportedChains: [incoNetwork],
+    defaultChain: educhainNetwork,
+    supportedChains: [educhainNetwork],
     embeddedWallets: {
       createOnLogin: "users-without-wallets",
     },
