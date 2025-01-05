@@ -1,9 +1,10 @@
 "use client";
 import { useParams } from "next/navigation";
 import React, { useState, useEffect, useRef } from "react";
-import { ChevronLeft, Play, BookOpen } from "lucide-react";
+import { ChevronLeft, Play, BookOpen, Coins } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import BalanceComponent from "@/components/balance-comp";
 
 const Page = () => {
   const { id } = useParams();
@@ -76,7 +77,6 @@ const Page = () => {
 
   const videoIds = course.lessons.map((lesson) => lesson.videoId);
 
-  // When all lessons are completed, encode the video IDs for URL
   const encodedVideoIds = encodeURIComponent(JSON.stringify(videoIds));
 
   useEffect(() => {
@@ -92,10 +92,14 @@ const Page = () => {
       ref={parentRef}
       className="max-w-full mx-auto mt-20 px-8 pb-20 relative"
     >
-      <Link href="/courses" className="flex items-center text-gray-600 mb-12">
-        <ChevronLeft size={20} />
-        <span className="ml-2 text-sm">Back to Courses</span>
-      </Link>
+      <div className=" w-full flex items-center justify-between">
+        <Link href="/courses" className="flex items-center text-gray-600 mb-12">
+          <ChevronLeft size={20} />
+          <span className="ml-2 text-sm">Back to Courses</span>
+        </Link>
+
+        <BalanceComponent />
+      </div>
 
       <h1 className="text-[3rem] font-light leading-tight tracking-wide mb-8">
         {course.title}
