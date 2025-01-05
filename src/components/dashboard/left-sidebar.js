@@ -4,7 +4,9 @@ import {
   HomeIcon,
   LayoutGrid,
   Search,
+  Settings,
   ShoppingBag,
+  User,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -29,7 +31,8 @@ const LeftSidebar = () => {
     { icon: HomeIcon, path: "/dashboard/home" },
     { icon: Search, path: "/dashboard/search" },
     { icon: Calendar1, path: "/dashboard/calendar" },
-    { icon: LayoutGrid, path: "/dashboard/explore" },
+    // { icon: LayoutGrid, path: "/dashboard/explore" },
+    { icon: User, path: "/dashboard/user" },
   ];
 
   return (

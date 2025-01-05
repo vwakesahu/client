@@ -64,7 +64,7 @@ function calculateNextClaimDate(currentDate, period) {
     default:
       throw new Error("Invalid period specified");
   }
-
+  
   return Timestamp.fromDate(date);
 }
 
